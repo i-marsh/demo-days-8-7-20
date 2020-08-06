@@ -474,6 +474,129 @@ Go ahead, create a new issue and see if you
 a) trigger the workflow
 b) Get some data played back in an issue comment. 
 
+<details open><summary>If we have time for a quick dad joke or two we can try this :)</summary>
+
+**update your index.js**
+
+```js
+const core = require('@actions/core');
+const github = require('@actions/github');
+const artifact = require('@actions/artifact');
+const fs = require('fs');
+const dadJoke = require('./dadjoke.js');
+
+async function run () {
+  try {    
+    const context = github.context;
+    
+    // log context eventName - this is what caused the action to run
+    console.log(`Processing event : ${context.eventName}`)
+
+
+    // we can also put information back into issues and prs.. 
+    // issue as an example 
+
+    // we will need our PAT to interact with issue - the workflow passes in the token we need
+    const myToken = core.getInput("access_token");
+    
+    // once we have a token we can create an authenticated API-client or :) octokit !!
+    const octokit = github.getOctokit(myToken);
+    
+
+    // check if it is an issue we are working with - it could be another type of event!
+    // the payload will change based on the event type so need to be careful matching things up.
+    // in our case we are looking to interact only if the event is an issue creation or a comment on an open issue.
+    // we want to ignore comments added to closed issues and the final "close and comment" button 
+    // there's a handy dandy property called `state` that can help with this :) 
+
+    if(('issues' == context.eventName || 'issue_comment' == context.eventName) && 
+    (context.payload.issue.state == "open")) {
+      console.log('creating new issue comment via the api')
+
+      // create the body of the comment that we want to add to our issue thread
+      // we can include markdown, a subset of html - just as if you were writing an issue comment :)
+      //n.b. line-split in a string `\` at the end of the line 
+
+      var commentBody = await dadJoke.getJoke();
+      var body = null;
+        switch(context.eventName) {
+          case "issues" : 
+            body = context.payload.issue.body; 
+            break;
+          case "issue_comment" :
+            body = context.payload.comment.body;
+            break;
+          default: 
+            throw new Error("Unsupported Event type in issue-ops")
+        }
+
+      if(body.includes('/cat')) {
+          commentBody = commentBody + '\n' + '![place a kitten right here](https://placekitten.com/400/400)';
+      }
+      // construct the parameters to create issue comment with - check the octokit-rest.js documention for samples and details
+      const issueComment = 
+      {
+        "owner" : context.repo.owner,
+        "repo" : context.repo.repo,
+        "issue_number" : context.issue.number,
+        "body" : commentBody
+      };
+
+      // hit the big red button and create that issue comment 
+      await octokit.issues.createComment(issueComment);
+    }
+    else {
+      console.log(`not supporting ${context.eventName} at this time .. thank you :)`);
+    }
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+ }
+
+run();
+```
+
+**and add the following file as `dadjoke.js`**
+
+``` js
+
+const axios = require('axios')
+
+
+module.exports.getJoke = async () =>  {
+    try {
+        
+        let res = await axios
+          .get('https://icanhazdadjoke.com/', {
+            headers: {
+              Accept: 'application/json'
+            }
+          })
+        if(res.status ==200) {
+            console.log(res.status)
+        }
+        return res.data.joke
+      } catch (error) {
+        console.log(error.message)
+      }
+} 
+
+```
+
+**we will need to run `npm ci` to pick up the axios package - then commit and push**
+``` sh
+npm ci
+
+git add .
+
+git commit -m "update with dadjoke and cat picture integration"
+
+git push  ## best practice would be to do this on a branch that ISN'T default :)
+```
+
+Now when you create an `issue` or add a comment to an existing one you should have an entirely different experience
+
+</details>
 
 ## Code Along Resources
 
