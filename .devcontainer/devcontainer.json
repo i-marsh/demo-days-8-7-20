@@ -1,0 +1,44 @@
+{
+	"name": "Node.js",
+	"build": {
+		"dockerfile": "base.Dockerfile",
+		// Update 'VARIANT' to pick a Node version: 10, 12, 14
+		"args": { "VARIANT": "14" }
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+"dbaeumer.vscode-eslint",
+		"bierner.github-markdown-preview",
+                "bierner.markdown-checkbox",
+                "bierner.markdown-emoji",
+                "bierner.markdown-preview-github-styles",
+                "bierner.markdown-yaml-preamble",
+                "cschleiden.vscode-github-actions",
+                "dbaeumer.vscode-eslint",
+                "euskadi31.json-pretty-printer",
+                "github.github-vscode-theme",
+                "github.vscode-pull-request-github-",
+                "me-dutour-mathieu.vscode-github-actions",
+                "ms-vsliveshare.vsliveshare",
+                "ms-vsonline.vsonline",
+                "numso.prettier-standard-vscode",
+                "redhat.vscode-yaml",
+                "securisec.github-actions"
+	]
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "yarn install",
+
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "node"
+}
