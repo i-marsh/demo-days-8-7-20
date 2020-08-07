@@ -188,7 +188,7 @@ async function run () {
       continueOnError: true
     }
     // upload the artifact with a parameterized name - in this case incorporating the run Id
-    const artifactInfo = artifactClient.uploadArtifact(`Context-run-${context.runId}`,files, rootDir, options);
+    const artifactInfo = await artifactClient.uploadArtifact(`Context-run-${context.runId}`,files, rootDir, options);
 
     console.log("artifact uploaded");
     // log out the response from the Artifact create operation
