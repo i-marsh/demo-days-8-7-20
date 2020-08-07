@@ -588,6 +588,8 @@ module.exports.getJoke = async () =>  {
 
 **we will need to run `npm ci` to pick up the axios package - then commit and push**
 ``` sh
+npm install axios --save
+
 npm ci
 
 git add .
