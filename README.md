@@ -394,6 +394,9 @@ async function run () {
   try {    
     const context = github.context;
     
+    //let's log the context for ease of access in the demo :) 
+    console.log(JSON.stringify(context, undefined, 2);
+    
     // log context eventName - this is what caused the action to run
     console.log(`Processing event : ${context.eventName}`)
 
